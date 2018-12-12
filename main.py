@@ -34,8 +34,8 @@ class Frame(wx.Frame):
 
             pathname = fd.GetPath()
         
-        with ImportDialog(self, pathname) as dlg:
-            res = dlg.ShowModal()
+        with ImportDialog(self, pathname) as self.dlg:
+            res = self.dlg.ShowModal()
 
 if __name__ == '__main__':
     app = wx.App(redirect=True, filename='TimeCapture.log')
