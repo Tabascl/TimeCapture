@@ -1,3 +1,5 @@
+import argparse
+
 import wx
 import wx.grid
 from gui.CSVGrid import CSVTable
@@ -26,16 +28,24 @@ class Frame(wx.Frame):
         exit()
 
     def OnImport(self, event):
-        home_dir = str(Path.home())
-        with wx.FileDialog(None, "Import from CSV", home_dir, wildcard="CSV files (*.csv)|*.csv",
-                        style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fd:
-            if fd.ShowModal() == wx.ID_CANCEL:
-                return
+        if args.test:
+            pathname = 'test_data/12-2018.csv'
+        else:
+            home_dir = str(Path.home())
+            with wx.FileDialog(None, "Import from CSV", home_dir, wildcard="CSV files (*.csv)|*.csv",
+                            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fd:
+                if fd.ShowModal() == wx.ID_CANCEL:
+                    return
 
-            pathname = fd.GetPath()
-        
+                pathname = fd.GetPath()
+
         with ImportDialog(self, pathname) as self.dlg:
             res = self.dlg.ShowModal()
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-t", "--test", help="Enable test mode",
+                    action='store_true')
+args = parser.parse_args()
 
 if __name__ == '__main__':
     app = wx.App(redirect=True, filename='TimeCapture.log')
