@@ -16,6 +16,9 @@ class ImportDialog(wx.Dialog):
     
     def _init_sizers(self):
         main_sizer = wx.BoxSizer(wx.VERTICAL)
+        btn_sizer = self.CreateButtonSizer(wx.OK | wx.CANCEL)
+
         main_sizer.Add(self.time_grid, 1, wx.EXPAND)
+        main_sizer.Add(btn_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 5)
 
         self.SetSizerAndFit(main_sizer)
