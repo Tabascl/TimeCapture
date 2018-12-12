@@ -7,17 +7,20 @@ class CSVTable(GridTableBase):
         self._load_file(filepath)
 
     def _load_file(self, path):
-        rd = CSVReader()
-        rows = rd.read(path)
+        try:
+            rows = CSVReader.read(path)
+        except FileNotFoundError as e:
+            print("Could not open file!", e)
+            self.data = ['Error', 'Error']
+            self.header_row = 'Error'
+            return
+
         self.data = []
         for row in rows:
             self.data.append(row)
 
         self.header_row = self.data[0]
         self.data = self.data[1:]
-
-    def update_data(self, path):
-        self._load_file(path)
 
     def GetNumberRows(self):
         return len(self.data)
