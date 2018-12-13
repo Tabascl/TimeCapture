@@ -20,13 +20,13 @@ class Frame(wx.Frame):
         self.menuBar.Append(self.fileMenu, '&File')
         self.menuBar.Append
         self.SetMenuBar(self.menuBar)
-        self.Bind(wx.EVT_MENU, self.OnQuit, self.fileItem)
-        self.Bind(wx.EVT_MENU, self.OnImport, self.import_item)
+        self.Bind(wx.EVT_MENU, self._on_quit, self.fileItem)
+        self.Bind(wx.EVT_MENU, self._on_import, self.import_item)
 
-    def OnQuit(self, event):
+    def _on_quit(self, event):
         exit()
 
-    def OnImport(self, event):
+    def _on_import(self, event):
         if config.testmode:
             pathname = 'test_data/12-2018.csv'
         else:
