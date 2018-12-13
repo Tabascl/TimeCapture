@@ -15,6 +15,11 @@ class ImportDialog(wx.Dialog):
         self.time_grid.SetTable(self.table)
         self.time_grid.AutoSize()
 
+        for col in range(self.time_grid.GetNumberCols()):
+            attr = wx.grid.GridCellAttr()
+            attr.SetReadOnly(True)
+            self.time_grid.SetColAttr(col, attr)
+
         self.day_btn = wx.Button(self, label='Set Day')
         self.arrive_btn = wx.Button(self, label='Set Arrive')
         self.leave_btn = wx.Button(self, label='Set Leave')
