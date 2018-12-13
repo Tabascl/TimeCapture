@@ -15,17 +15,23 @@ class ImportDialog(wx.Dialog):
         self.time_grid.SetTable(self.table)
         self.time_grid.AutoSize()
 
+        self.day_btn = wx.Button(self, label='Set Day')
         self.arrive_btn = wx.Button(self, label='Set Arrive')
+        self.leave_btn = wx.Button(self, label='Set Leave')
 
     def _init_events(self):
+        self.Bind(wx.EVT_BUTTON, self._on_set_day, self.day_btn)
         self.Bind(wx.EVT_BUTTON, self._on_set_arrive, self.arrive_btn)
+        self.Bind(wx.EVT_BUTTON, self._on_set_leave, self.leave_btn)
 
     def _init_sizers(self):
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         bottom_sizer = wx.BoxSizer(wx.HORIZONTAL)
         btn_sizer = self.CreateButtonSizer(wx.OK | wx.CANCEL)
 
+        bottom_sizer.Add(self.day_btn, 0)
         bottom_sizer.Add(self.arrive_btn, 0)
+        bottom_sizer.Add(self.leave_btn, 0)
         bottom_sizer.AddStretchSpacer()
         bottom_sizer.Add(btn_sizer, 0)
 
@@ -34,6 +40,33 @@ class ImportDialog(wx.Dialog):
 
         self.SetSizerAndFit(main_sizer)
 
+    def _on_set_day(self, event):
+        self._paint_selection('light blue')
+
     def _on_set_arrive(self, event):
-        topleft = self.time_grid.GetSelectionBlockTopLeft()
-        bottomright = self.time_grid.GetSelectionBlockTopRight()
+        self._paint_selection(wx.RED)
+
+    def _on_set_leave(self, event):
+        self._paint_selection(wx.GREEN)
+
+    def _paint_selection(self, color):
+        try:
+            topleft = self.time_grid.GetSelectionBlockTopLeft()[0]
+            bottomright = self.time_grid.GetSelectionBlockBottomRight()[0]
+        except IndexError:
+            cols = self.time_grid.GetSelectedCols()
+            rows = self.time_grid.GetSelectedRows()
+
+            if cols:
+                topleft = [0, cols[0]]
+                bottomright = [self.time_grid.NumberRows-1, cols[0]]
+            elif rows:
+                topleft = [rows[0], 0]
+                bottomright = [rows[0], self.time_grid.NumberCols-1]
+
+        for x in range(topleft[0], bottomright[0]+1):
+            for y in range(topleft[1], bottomright[1]+1):
+                self.time_grid.SetCellBackgroundColour(x, y, color)
+
+        self.time_grid.ClearSelection()
+        self.time_grid.ForceRefresh()
