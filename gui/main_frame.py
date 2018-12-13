@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import wx
+import wx.adv
 
 import config
 from gui.Import import ImportDialog
@@ -22,6 +23,7 @@ class Frame(wx.Frame):
         self.Show()
 
     def _init_ctrls(self):
+        self.panel = wx.Panel(self)
         self.menuBar = wx.MenuBar()
         self.fileMenu = wx.Menu()
         self.fileItem = self.fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit Application')
@@ -33,12 +35,23 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_MENU, self._on_quit, self.fileItem)
         self.Bind(wx.EVT_MENU, self._on_import, self.import_item)
 
-        self.inputpanel = InputPanel(self)
+        self.date_label = wx.StaticText(self.panel, label='Date:')
+        self.datepicker = wx.adv.DatePickerCtrl(self.panel, style=wx.adv.DP_DROPDOWN)
+        self.datepicker.SetValue(wx.DateTime.Today())
+
+        self.inputpanel = InputPanel(self.panel)
 
     def _init_sizers(self):
+        frame_sizer = wx.BoxSizer(wx.VERTICAL)
+        date_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        date_sizer.Add(self.date_label, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5)
+        date_sizer.Add(self.datepicker)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
+        main_sizer.Add(date_sizer, 0, wx.ALL, 5)
         main_sizer.Add(self.inputpanel, 1, wx.EXPAND)
-        self.SetSizerAndFit(main_sizer)
+        self.panel.SetSizerAndFit(main_sizer)
+        frame_sizer.Add(self.panel, 1, wx.EXPAND)
+        self.SetSizerAndFit(frame_sizer)
 
     def _on_quit(self, event):
         exit()
