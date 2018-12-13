@@ -18,8 +18,9 @@ class Trip:
         self.distance = distance
 
 class Task:
-    def __init__(self, company, description):
+    def __init__(self, company, task_type, description):
         self.company = company
+        self.task_type = task_type
         self.description = description
 
 class Location:
