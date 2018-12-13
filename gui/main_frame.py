@@ -4,11 +4,21 @@ import wx
 
 import config
 from gui.Import import ImportDialog
+from gui.InputPanel import InputPanel
 
 class Frame(wx.Frame):
     def __init__(self):
         super(Frame, self).__init__(None, wx.ID_ANY, "Hello World")
         self._init_ctrls()
+        self._init_sizers()
+
+        icon = wx.EmptyIcon()
+        icon.CopyFromBitmap(wx.Bitmap('img/icon.png', wx.BITMAP_TYPE_PNG))
+        self.SetIcon(icon)
+
+        ticon = wx.adv.TaskBarIcon()
+        ticon.SetIcon(icon)
+
         self.Show()
 
     def _init_ctrls(self):
@@ -22,6 +32,13 @@ class Frame(wx.Frame):
         self.SetMenuBar(self.menuBar)
         self.Bind(wx.EVT_MENU, self._on_quit, self.fileItem)
         self.Bind(wx.EVT_MENU, self._on_import, self.import_item)
+
+        self.inputpanel = InputPanel(self)
+
+    def _init_sizers(self):
+        main_sizer = wx.BoxSizer(wx.VERTICAL)
+        main_sizer.Add(self.inputpanel, 1, wx.EXPAND)
+        self.SetSizerAndFit(main_sizer)
 
     def _on_quit(self, event):
         exit()
