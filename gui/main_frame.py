@@ -12,6 +12,8 @@ class Frame(wx.Frame):
         super(Frame, self).__init__(None, wx.ID_ANY, "Hello World")
         self._init_ctrls()
         self._init_sizers()
+        self._init_accel()
+        self._init_events()
 
         icon = wx.EmptyIcon()
         icon.CopyFromBitmap(wx.Bitmap('img/icon.png', wx.BITMAP_TYPE_PNG))
@@ -21,6 +23,14 @@ class Frame(wx.Frame):
         ticon.SetIcon(icon)
 
         self.Show()
+
+    def _init_accel(self):
+        self.newentry_id = wx.NewId()
+        entry = wx.AcceleratorEntry()
+        entry.Set(wx.ACCEL_CTRL, wx.WXK_RETURN, id=self.newentry_id)
+
+        accel_tbl = wx.AcceleratorTable([entry])
+        self.SetAcceleratorTable(accel_tbl)
 
     def _init_ctrls(self):
         self.panel = wx.Panel(self)
@@ -32,14 +42,17 @@ class Frame(wx.Frame):
         self.menuBar.Append(self.fileMenu, '&File')
         self.menuBar.Append
         self.SetMenuBar(self.menuBar)
-        self.Bind(wx.EVT_MENU, self._on_quit, self.fileItem)
-        self.Bind(wx.EVT_MENU, self._on_import, self.import_item)
 
         self.date_label = wx.StaticText(self.panel, label='Date:')
         self.datepicker = wx.adv.DatePickerCtrl(self.panel, style=wx.adv.DP_DROPDOWN)
         self.datepicker.SetValue(wx.DateTime.Today())
 
         self.inputpanel = InputPanel(self.panel)
+
+    def _init_events(self):
+        self.Bind(wx.EVT_MENU, self._on_quit, self.fileItem)
+        self.Bind(wx.EVT_MENU, self._on_import, self.import_item)
+        self.Bind(wx.EVT_MENU, self._on_accel_newentry, id=self.newentry_id)
 
     def _init_sizers(self):
         frame_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -52,6 +65,10 @@ class Frame(wx.Frame):
         self.panel.SetSizerAndFit(main_sizer)
         frame_sizer.Add(self.panel, 1, wx.EXPAND)
         self.SetSizerAndFit(frame_sizer)
+
+    def _on_accel_newentry(self, event):
+        new_inputpanel = InputPanel(self.panel)
+        self.input_panel_sizer.Add(new_inputpanel, 1, wx.EXPAND)
 
     def _on_quit(self, event):
         exit()
