@@ -2,17 +2,16 @@ from pathlib import Path
 
 import wx
 import wx.adv
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 import config
 from gui.Import import ImportDialog
 from gui.InputPanel import InputPanel
+from gui.DayListCtrl import DayListCtrl
 
 class Frame(wx.Frame):
     def __init__(self):
         super(Frame, self).__init__(None, wx.ID_ANY, "TimeCapture")
-        self._init_ctrls()
-        self._init_sizers()
-        self._init_events()
 
         icon = wx.EmptyIcon()
         icon.CopyFromBitmap(wx.Bitmap('img/icon.png', wx.BITMAP_TYPE_PNG))
@@ -20,6 +19,12 @@ class Frame(wx.Frame):
 
         ticon = wx.adv.TaskBarIcon()
         ticon.SetIcon(icon)
+
+        self.list_columns = ['From', 'To', 'Company', 'Task', 'Description']
+        
+        self._init_ctrls()
+        self._init_sizers()
+        self._init_events()
 
         self.Show()
 
@@ -40,9 +45,19 @@ class Frame(wx.Frame):
 
         self.inputpanel = InputPanel(self.panel)
 
+        self.day_list = DayListCtrl(self)
+        for val in self.list_columns:
+            self.day_list.AppendColumn(val, )
+        self.day_list.Append(['8:00', '17:00', 'CREADIS', 'Hours', 'Work on a lot of really, really important stuff'])
+
     def _init_events(self):
         self.Bind(wx.EVT_MENU, self._on_quit, self.fileItem)
         self.Bind(wx.EVT_MENU, self._on_import, self.import_item)
+        self.Bind(wx.EVT_SIZE, self._on_size, self)
+
+    def _on_size(self, event):
+        self.day_list.Refresh()
+        wx.Event.Skip(event)
 
     def _init_sizers(self):
         frame_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -51,7 +66,8 @@ class Frame(wx.Frame):
         date_sizer.Add(self.datepicker)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         main_sizer.Add(date_sizer, 0, wx.ALL, 5)
-        main_sizer.Add(self.inputpanel, 1, wx.EXPAND)
+        main_sizer.Add(self.inputpanel, 0, wx.EXPAND)
+        main_sizer.Add(self.day_list, 1, wx.EXPAND | wx.ALL, 5)
         self.panel.SetSizerAndFit(main_sizer)
         frame_sizer.Add(self.panel, 1, wx.EXPAND)
         self.SetSizerAndFit(frame_sizer)
