@@ -1,4 +1,5 @@
 from pathlib import Path
+import datetime
 
 import wx
 import wx.adv
@@ -10,9 +11,11 @@ from gui.InputPanel import InputPanel
 class Frame(wx.Frame):
     def __init__(self):
         super(Frame, self).__init__(None, wx.ID_ANY, "TimeCapture")
-        self._init_ctrls()
-        self._init_sizers()
-        self._init_events()
+
+        self.today = datetime.date.today()
+
+        self.calendar_week = self.today.strftime('%W')
+        self.date_string = self.today.strftime('%A, %d.%m.%y')
 
         icon = wx.EmptyIcon()
         icon.CopyFromBitmap(wx.Bitmap('img/icon.png', wx.BITMAP_TYPE_PNG))
@@ -20,6 +23,12 @@ class Frame(wx.Frame):
 
         ticon = wx.adv.TaskBarIcon()
         ticon.SetIcon(icon)
+
+        self.topfont = wx.Font(20, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
+
+        self._init_ctrls()
+        self._init_sizers()
+        self._init_events()
 
         self.Show()
 
@@ -34,9 +43,13 @@ class Frame(wx.Frame):
         self.menuBar.Append
         self.SetMenuBar(self.menuBar)
 
-        self.date_label = wx.StaticText(self.panel, label='Date:')
-        self.datepicker = wx.adv.DatePickerCtrl(self.panel, style=wx.adv.DP_DROPDOWN)
-        self.datepicker.SetValue(wx.DateTime.Today())
+        self.cw_label = wx.StaticText(self.panel, label='KW' + self.calendar_week)
+        self.date_label = wx.StaticText(self.panel, label=self.date_string)
+
+        self.date_label.SetFont(self.topfont)
+        self.cw_label.SetFont(self.topfont)
+        # self.datepicker = wx.adv.DatePickerCtrl(self.panel, style=wx.adv.DP_DROPDOWN)
+        # self.datepicker.SetValue(wx.DateTime.Today())
 
         self.inputpanel = InputPanel(self.panel)
 
@@ -47,10 +60,11 @@ class Frame(wx.Frame):
     def _init_sizers(self):
         frame_sizer = wx.BoxSizer(wx.VERTICAL)
         date_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        date_sizer.Add(self.date_label, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5)
-        date_sizer.Add(self.datepicker)
+        date_sizer.Add(self.cw_label)
+        date_sizer.AddStretchSpacer()
+        date_sizer.Add(self.date_label)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
-        main_sizer.Add(date_sizer, 0, wx.ALL, 5)
+        main_sizer.Add(date_sizer, 0, wx.EXPAND | wx.ALL, 5)
         main_sizer.Add(self.inputpanel, 1, wx.EXPAND)
         self.panel.SetSizerAndFit(main_sizer)
         frame_sizer.Add(self.panel, 1, wx.EXPAND)
