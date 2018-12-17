@@ -7,6 +7,7 @@ import wx.adv
 import config
 from gui.Import import ImportDialog
 from gui.InputPanel import InputPanel
+from gui.WeekOverview import WeekOverview
 
 class Frame(wx.Frame):
     def __init__(self):
@@ -30,6 +31,8 @@ class Frame(wx.Frame):
         self._init_sizers()
         self._init_events()
 
+        self.SetSize(800, 600)
+        
         self.Show()
 
     def _init_ctrls(self):
@@ -52,6 +55,7 @@ class Frame(wx.Frame):
         # self.datepicker.SetValue(wx.DateTime.Today())
 
         self.inputpanel = InputPanel(self.panel)
+        self.weekoverview = WeekOverview(self.panel)
 
     def _init_events(self):
         self.Bind(wx.EVT_MENU, self._on_quit, self.fileItem)
@@ -65,7 +69,8 @@ class Frame(wx.Frame):
         date_sizer.Add(self.date_label)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
         main_sizer.Add(date_sizer, 0, wx.EXPAND | wx.ALL, 5)
-        main_sizer.Add(self.inputpanel, 1, wx.EXPAND)
+        main_sizer.Add(self.inputpanel, 0, wx.EXPAND | wx.ALL, 5)
+        main_sizer.Add(self.weekoverview, 1, wx.EXPAND | wx.ALL, 5)
         self.panel.SetSizerAndFit(main_sizer)
         frame_sizer.Add(self.panel, 1, wx.EXPAND)
         self.SetSizerAndFit(frame_sizer)
