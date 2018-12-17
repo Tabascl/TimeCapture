@@ -19,10 +19,10 @@ class InputPanel(wx.Panel):
 
     def _init_sizers(self):
         main_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        main_sizer.Add(self.timepicker_arrive, 0, wx.ALL, 5)
-        main_sizer.Add(self.timepicker_leave, 0, wx.ALL, 5)
-        main_sizer.Add(self.company_cbox, 0, wx.ALL, 5)
-        main_sizer.Add(self.task_description, 0, wx.ALL, 5)
+        main_sizer.Add(self.timepicker_arrive, 0, wx.RIGHT, 5)
+        main_sizer.Add(self.timepicker_leave, 0, wx.RIGHT, 5)
+        main_sizer.Add(self.company_cbox, 0, wx.RIGHT, 5)
+        main_sizer.Add(self.task_description, 1)
         self.SetSizerAndFit(main_sizer)
 
 
